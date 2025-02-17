@@ -41,7 +41,6 @@ export default async function Navbar() {
             </form>
           )}
         </div>
-        <div className='text-black'>RillKan</div>
       </nav>
     </header>
   )
