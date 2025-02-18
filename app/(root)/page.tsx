@@ -10,7 +10,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
     author: { _id: 1, name: "RillKan" },
     _id: 1,
     description: "This is a description",
-    image: "https://placehold.co/600x400",
+    image: "https://picsum.photos/id/1/5000/3333",
     category: "Robots",
     title: "We Robots"
   }]
