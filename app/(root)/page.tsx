@@ -5,23 +5,8 @@ import { client } from "@/sanity/lib/client";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ query: string }> }) {
   const query = (await searchParams).query
-
   const posts = await client.fetch(STARTUPS_QUERY)
 
-  console.log(JSON.stringify(posts, null, 2))
-
-  /*
-  const posts = [{
-    _createdAt: new Date(),
-    views: 55,
-    author: { _id: 1, name: "RillKan" },
-    _id: 1,
-    description: "This is a description",
-    image: "https://picsum.photos/id/1/5000/3333",
-    category: "Robots",
-    title: "We Robots"
-  }]
- */
   return (
     <>
       <section className="pink_container">
