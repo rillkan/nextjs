@@ -11,7 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       user: { name, email, image },
       profile: { id, login, bio }
     }) {
-      const existingUser = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: id });
+      const existingUser = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id });
 
       if (!existingUser) {
         await writeClient.create({
@@ -30,7 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account & profile) {
         const user = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile?.id })
 
-        token.id = user._id
+        token.id = user?._id
       }
       return token
     },
