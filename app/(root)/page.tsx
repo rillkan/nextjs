@@ -7,10 +7,9 @@ import { auth } from "@/auth";
 export default async function Home({ searchParams }: { searchParams: Promise<{ query: string }> }) {
   const query = (await searchParams).query
   const params = { search: query || null }
-  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params })
-
   const session = await auth()
   console.log(session?.id)
+  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params })
 
   return (
     <>
@@ -28,7 +27,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
         <ul className="mt-7 card_grid">
           {posts?.length > 0 ? (
             posts.map((post: StartupTypeCard) => (
-              <StartupCard key={posts?._id} post={post} />
+              <StartupCard key={post._id} post={post} />
             ))
           ) : (
             <p className="no-results">No startups found</p>
