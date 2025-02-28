@@ -1,21 +1,49 @@
 "use client"
 
-import { useState } from "react"
+import { useActionState, useState } from "react"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
 import MDEditor from "@uiw/react-md-editor"
 import { Button } from "./ui/button"
 import { Send } from "lucide-react"
-
+import { formSchema } from "@/lib/validation"
+import { z } from 'zod'
 
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [pitch, setPitch] = useState("**Hello world")
+  const [pitch, setPitch] = useState(() => "**Hello world")
 
-  const isPending = false
+  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+    try {
+      const formValues = {
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        category: formData.get("category") as string,
+        link: formData.get("link") as string,
+        pitch
+      }
+      await formSchema.parseAsync(formValues);
+      //const result = await createIdea(prevState, formData, pitch)
+      //console.log(result)
+      console.log(formValues)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors = error.flatten().fieldErrors
+        setErrors(fieldErrors as unknown as Record<string, string>)
+        return { ...prevState, error: "Validation failed", status: "ERROR " }
+      }
+      return {
+        ...prevState,
+        error: 'an unexpected error occured',
+        state: "ERROR"
+      }
+    }
+  }
+
+  const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" })
 
   return (
-    <form action={() => { }} className="startup-form">
+    <form action={formAction} className="startup-form">
       <div>
         <label htmlFor="title" className="startup-form_label">Title</label>
         <Input id="title" name="title" className="startup-form_input" required placeholder="Startup Title" />
@@ -25,7 +53,7 @@ const StartupForm = () => {
 
       <div>
         <label htmlFor="description" className="startup-form_label">Description</label>
-        <Textarea id="description" name="description" className="startup-form_textarea" required placeholder="Startup Description" />
+        <Textarea id="description" name="description" className="startup-form_textarea" required placeholder="Short Description of your startup idea" />
 
         {errors.description && <p className="start-form_error">{errors.tidescriptiontle}</p>}
       </div>
@@ -39,7 +67,7 @@ const StartupForm = () => {
 
       <div>
         <label htmlFor="link" className="startup-form_label">Image Url</label>
-        <Input id="link" name="link" className="startup-form_input" required placeholder="Startup Image URL" />
+        <Input id="link" name="link" className="startup-form_input" required placeholder="Paste a link to your demo or promotional media" />
 
         {errors.link && <p className="start-form_error">{errors.link}</p>}
       </div>
@@ -68,8 +96,6 @@ const StartupForm = () => {
           {isPending ? "Sending pitch..." : "Submit your pitch"}
           <Send className="size-6 ml-2" />
         </Button>
-
-
       </div>
     </form>
 
